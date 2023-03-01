@@ -1,0 +1,3 @@
+[submodule "cpu/oneDNN/oneDNN"]
+	path = cpu/int_ops/oneDNN
+	url = https://github.com/oneapi-src/oneDNN.git
