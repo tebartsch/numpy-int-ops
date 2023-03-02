@@ -6,7 +6,7 @@ Supported Ops:
 
  - `int8 x int8 -> int32` matrix multiplication for 4-dimensional arrays
 
-![benchmark/result.png]()
+![](benchmark/result.png)
 
 ## CPU
 
