@@ -95,7 +95,7 @@ def time_custom_int8_np_matmul(matA: np.ndarray, matB: np.ndarray, repetitions: 
 def run_benchmark(rng):
     max_size = 300
     step = 5
-    N = np.arange(25, max_size + 1, step)
+    N = np.arange(50, max_size + 1, step)
     np_float32_time = np.zeros(N.shape)
     np_int8_time = np.zeros(N.shape)
     torch_int8_time = np.zeros(N.shape)
@@ -111,8 +111,7 @@ def run_benchmark(rng):
         int8_matA = rng.integers(-2**7, 2**7-1, size=(k, l, n, n), dtype=np.int8)
         int8_matB = rng.integers(-2**7, 2**7-1, size=(k, l, n, n), dtype=np.int8)
 
-        # repetitions = len(N) - i
-        repetitions = 1
+        repetitions = len(N) - i
 
         np_float32_time[i] = time_numpy_matmul(float32_matA, float32_matB, repetitions)
 
@@ -121,8 +120,6 @@ def run_benchmark(rng):
         tensorflow_int8_time[i] = time_tensorflow_int8_matmul(int8_matA, int8_matB, repetitions)
         onnxruntime_int8_time[i] = time_onnx_int8_matmul(int8_matA, int8_matB, repetitions)
         custom_int8_np_time[i] = time_custom_int8_np_matmul(int8_matA, int8_matB, repetitions)
-
-    plot("numpy: int8 vs float32 matrix-multiplication on CPU")
 
     plot("int8 matrix-multiplication on CPU\nnormalized to np-float32",
          "result_normalized.png",
