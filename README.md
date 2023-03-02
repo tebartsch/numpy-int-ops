@@ -1,14 +1,12 @@
 # python-integer-matmul
 
-## Benchmark of Alternatives
+Fast integer operations for numpy.
 
-```bash
-cd benchmark-alternatives
-python3.10 -m venv venv
-source venv/bin/activate
-pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt
-```
+Supported Ops:
+
+ - `int8 x int8 -> int32` matrix multiplication for 4-dimensional arrays
+
+![benchmark/result.png]()
 
 ## CPU
 
@@ -30,5 +28,16 @@ cd cpu/int_ops
 mkdir build && cd build
 cmake ..
 make
-./IntOps
+cp libIntOps.so ../../numpy_int_ops_cpu/.
+```
+
+## Benchmark
+
+```bash
+cd benchmark
+python3.10 -m venv venv
+source venv/bin/activate
+pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+pip install ../cpu/numpy_int_ops_cpu
+pip install -r requirements.txt
 ```

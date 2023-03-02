@@ -3,3 +3,7 @@ benchmark/venv
 cpu/int_ops/oneDNN/build
 cpu/int_ops/onednn_package
 cpu/int_ops/build
+cpu/build
+
+*__pycache__
+*.egg-info

@@ -8,13 +8,19 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import onnx
 import onnxruntime as ort
+from numpy_int_ops_cpu.ops import int8_matmul
 
 
 def plot(title: str, filename: str, x: np.ndarray, ys: list[np.ndarray], xlabel: str, labels=list[str]):
+    cmap = plt.get_cmap("tab20")
+    
     fig, ax = plt.subplots()
     ax.set_title(title)
-    for y, label in zip(ys, labels):
-        ax.plot(x, y, label=label)
+    for i, (y, label) in enumerate(zip(ys, labels)):
+        if i == 0: 
+            ax.plot(x, y, label=label, color=cmap(0), linewidth=3)
+        else:
+            ax.plot(x, y, label=label, color=cmap(2*i+1), linewidth=1)
     ax.set_yscale("log")
     ax.set_ylabel("time (s)")
     ax.set_xlabel(xlabel)
@@ -79,16 +85,23 @@ def time_onnx_int8_matmul(matA: np.ndarray, matB: np.ndarray, repetitions: int =
 
     return (time() - stime) / repetitions
 
+def time_custom_int8_np_matmul(matA: np.ndarray, matB: np.ndarray, repetitions: int = 1):
+    stime = time()
+    for _ in range(repetitions):
+        int8_matmul(matA, matB)
+    return (time() - stime) / repetitions
+
 
 def run_benchmark(rng):
-    max_size = 225
-    step = 25
+    max_size = 300
+    step = 5
     N = np.arange(25, max_size + 1, step)
     np_float32_time = np.zeros(N.shape)
     np_int8_time = np.zeros(N.shape)
     torch_int8_time = np.zeros(N.shape)
     tensorflow_int8_time = np.zeros(N.shape)
     onnxruntime_int8_time = np.zeros(N.shape)
+    custom_int8_np_time = np.zeros(N.shape)
 
     k, l = 16, 12
 
@@ -98,8 +111,8 @@ def run_benchmark(rng):
         int8_matA = rng.integers(-2**7, 2**7-1, size=(k, l, n, n), dtype=np.int8)
         int8_matB = rng.integers(-2**7, 2**7-1, size=(k, l, n, n), dtype=np.int8)
 
-        # repetitions = max_size - n + 1
-        repetitions = 3
+        # repetitions = len(N) - i
+        repetitions = 1
 
         np_float32_time[i] = time_numpy_matmul(float32_matA, float32_matB, repetitions)
 
@@ -107,6 +120,9 @@ def run_benchmark(rng):
         torch_int8_time[i] = time_torch_int8_matmul(int8_matA, int8_matB, repetitions)
         tensorflow_int8_time[i] = time_tensorflow_int8_matmul(int8_matA, int8_matB, repetitions)
         onnxruntime_int8_time[i] = time_onnx_int8_matmul(int8_matA, int8_matB, repetitions)
+        custom_int8_np_time[i] = time_custom_int8_np_matmul(int8_matA, int8_matB, repetitions)
+
+    plot("numpy: int8 vs float32 matrix-multiplication on CPU")
 
     plot("int8 matrix-multiplication on CPU\nnormalized to np-float32",
          "result_normalized.png",
@@ -117,21 +133,22 @@ def run_benchmark(rng):
             torch_int8_time / np_float32_time,
             tensorflow_int8_time / np_float32_time,
             onnxruntime_int8_time / np_float32_time,
+            custom_int8_np_time / np_float32_time,
          ],
-         labels=['np (float32)','np (int8)', 'torch (int8)', 'tensorflow (int8)', 'onnxruntime (int8)'],
+         labels=['np (float32)','np (int8)', 'torch (int8)', 'tensorflow (int8)', 'onnxruntime (int8)', 'custom np (int8)'],
          xlabel=f"matrix size: {k}x{l}xNxN")
     
     plot("int8 matrix-multiplication on CPU",
          "result.png",
          N, 
          [
-            np_float32_time, 
+            custom_int8_np_time,
             np_int8_time, 
             torch_int8_time,
             tensorflow_int8_time,
             onnxruntime_int8_time,
          ],
-         labels=['np (float32)','np (int8)', 'torch (int8)', 'tensorflow (int8)', 'onnxruntime (int8)'],
+         labels=[ 'oneDNN', 'numpy', 'torch', 'tensorflow', 'onnxruntime'],
          xlabel=f"matrix size: {k}x{l}xNxN")
 
 
