@@ -12,7 +12,7 @@ Supported Ops:
 
 The following instructions are tested on Fedora 37.
 
- 1. Build oneDNN from source. We do that in an Ubuntu22.04 as in the oneDNN CI.
+ 1. Build oneDNN from source. We do that in an Ubuntu22.04 container like in the oneDNN CI.
     ```bash
     cd onednn_int_ops
 
