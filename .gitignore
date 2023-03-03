@@ -1,10 +1,11 @@
 .vscode
+venv
 benchmark/venv
-cpu/int_ops/oneDNN/build
-cpu/int_ops/onednn_package
-cpu/int_ops/build
-cpu/build
-cpu/numpy_int_ops_cpu/libIntOps.so
+onednn_int_ops/oneDNN/build
+onednn_int_ops/onednn_package
+onednn_int_ops/build
+build
+numpy_int_ops_cpu/libIntOps.so
 
 *__pycache__
 *.egg-info
