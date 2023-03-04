@@ -1,4 +1,4 @@
-# python-integer-matmul
+# numpy-int-ops
 
 Fast integer operations on CPUs for numpy.
 
