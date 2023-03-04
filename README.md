@@ -1,6 +1,6 @@
 # numpy-int-ops
 
-Fast integer operations on CPUs for numpy.
+Fast integer operations on CPUs for numpy. Also see my [blog post](https://tebartsch.ai/blog/oneDNN-Adventures.html).
 
 Supported Ops:
 
