@@ -49,7 +49,7 @@ The following instructions are tested on Fedora 37.
     ```bash
     python - <<'EOF'
     import numpy as np
-    from numpy_int_ops_cpu.ops import int8_matmul
+    from numpy_int_ops.ops import int8_matmul
     A = np.arange(4).reshape(1, 1, 2, 2).astype(np.int8)
     B = (np.arange(4) - 2).reshape(1, 1, 2, 2).astype(np.int8)
     print(int8_matmul(A, B).reshape(2, 2))
