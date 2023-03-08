@@ -12,7 +12,13 @@ Supported Ops:
 
 The following instructions are tested on Fedora 37.
 
- 1. Build oneDNN from source. We do that in an Ubuntu22.04 container like in the oneDNN CI.
+ 1. Clone repository with submodules.
+    ```bash
+    git clone --recurse-submodules https://github.com/tebartsch/numpy-int-ops
+    cd numpy-int-ops
+    ```
+
+ 2. Build oneDNN from source. We do that in an Ubuntu22.04 container like in the oneDNN CI.
     ```bash
     cd onednn_int_ops
 
@@ -24,7 +30,7 @@ The following instructions are tested on Fedora 37.
     podman run -v "$PWD":"$PWD":z ubuntu-build bash -c "cd $PWD && bash container_install_onednn.sh"
     ```
  
- 2. Create shared library for fast integer operations and copy it into the root
+ 3. Create shared library for fast integer operations and copy it into the root
     directory of the python package. 
     ```bash
     cd onednn_int_ops
@@ -34,12 +40,12 @@ The following instructions are tested on Fedora 37.
     cp libIntOps.so ../../numpy_int_ops/.
     ```
 
- 3. Install python package
+ 4. Install python package
     ```bash
     pip install .
     ```
 
- 4. Test the installation
+ 5. Test the installation
     ```bash
     python - <<'EOF'
     import numpy as np
